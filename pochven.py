@@ -7,10 +7,17 @@ import math
 
 
 class Pochven:
-    def __init__(self, include_home_systems=False, camping_system: Optional[int] = None, flashpoint_starting_systems: Optional[list] = None):
+    def __init__(self, include_home_systems=False, camping_system: Optional[int] = None,
+                 flashpoint_starting_systems: Optional[list] = None, fleet_starting_system: Optional[int] = None):
         self.flashpoints = dict()
         self.systems = dict()
         self.camping_system = int()
+        self.fleet_starting_system = fleet_starting_system
+
+        # Validate fleet_starting_system if provided
+        if fleet_starting_system is not None and fleet_starting_system not in range(0, 24):
+            raise ValueError(
+                "The fleet starting system must be an int between 0 and 23 inclusive")
 
         # validate values if included
         if camping_system is not None and camping_system not in range(0, 24):
@@ -187,11 +194,22 @@ class Pochven:
             # Create a copy of the original state
             original_flashpoints = self.flashpoints.copy()
             original_camping_system = self.camping_system
+            original_fleet_starting_system = self.fleet_starting_system
 
-            # Start at a random flashpoint
-            current_flashpoint_id = random.choice(
-                list(original_flashpoints.keys()))
-            current_system = original_flashpoints[current_flashpoint_id]
+            # Determine the starting system and flashpoint
+            if self.fleet_starting_system is not None:
+                # Start at the specified system
+                current_system = self.fleet_starting_system
+                # Find the nearest flashpoint to start with
+                current_flashpoint_id = self.find_nearest_flashpoint(
+                    current_system)
+                # Move to that flashpoint to begin the simulation
+                current_system = original_flashpoints[current_flashpoint_id]
+            else:
+                # Start at a random flashpoint (existing behavior)
+                current_flashpoint_id = random.choice(
+                    list(original_flashpoints.keys()))
+                current_system = original_flashpoints[current_flashpoint_id]
 
             # Track if we encounter the camping system in this simulation
             encountered = False

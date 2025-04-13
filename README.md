@@ -34,6 +34,7 @@ python example.py --camping-system 12 --n-flashpoints 10 --visualize --plot-curv
 
 - `--camping-system`: System ID to camp in (0-23). If not provided, a random system will be chosen.
 - `--flashpoint-systems`: Three system IDs (0-23) where flashpoints start. If not provided, random systems will be chosen.
+- `--fleet-starting-system`: System ID where the flashpoint fleet starts (0-23). If not provided, starts at a random flashpoint.
 - `--n-flashpoints`: Number of flashpoints to complete in each simulation (default: 10)
 - `--n-simulations`: Number of simulations to run (default: 1000)
 - `--max-flashpoints`: Maximum number of flashpoints to plot in probability curve (default: 20)
@@ -49,6 +50,12 @@ To calculate the probability of encountering a flashpoint fleet after 15 flashpo
 python example.py --camping-system 5 --n-flashpoints 15 --n-simulations 2000
 ```
 
+To specify both the camping system and the fleet's starting system:
+
+```bash
+python example.py --camping-system 5 --fleet-starting-system 10 --n-flashpoints 15
+```
+
 To visualize the Pochven constellation and plot a probability curve:
 
 ```bash
@@ -62,7 +69,7 @@ python example.py --visualize --plot-curve
 The simulation works as follows:
 
 1. Initialize the Pochven constellation with 24 systems and 3 random flashpoints
-2. Start the flashpoint fleet at a random flashpoint
+2. Start the flashpoint fleet at the specified system or at a random flashpoint if not specified
 3. Complete the current flashpoint, which removes it and spawns a new one
 4. Find the nearest flashpoint from the current position
 5. Calculate the shortest path to the nearest flashpoint

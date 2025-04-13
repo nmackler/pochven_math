@@ -34,18 +34,24 @@ def main():
     parser.add_argument('--plot-curve', action='store_true',
                         help='Plot the probability curve')
 
+    parser.add_argument('--fleet-starting-system', type=int, default=None,
+                        help='System ID where the flashpoint fleet starts (0-23). If not provided, starts at a random flashpoint.')
+
     args = parser.parse_args()
 
     # Create a Pochven instance with the specified parameters
     pochven = Pochven(
         camping_system=args.camping_system,
-        flashpoint_starting_systems=args.flashpoint_systems
+        flashpoint_starting_systems=args.flashpoint_systems,
+        fleet_starting_system=args.fleet_starting_system
     )
 
     # Print initial state
     print("Initial state:")
     print(f"Camping system: {pochven.camping_system}")
     print(f"Flashpoints: {pochven.flashpoints}")
+    if pochven.fleet_starting_system is not None:
+        print(f"Fleet starting system: {pochven.fleet_starting_system}")
 
     # Visualize the initial state if requested
     if args.visualize:
@@ -89,15 +95,29 @@ def main():
 
 def run_example_simulation():
     """Run a detailed example simulation to demonstrate the functionality."""
-    pochven = Pochven(camping_system=12)
+    # Create a Pochven instance with a specific camping system and fleet starting system
+    pochven = Pochven(camping_system=12, fleet_starting_system=5)
 
     print("Example simulation:")
     print(f"Camping system: {pochven.camping_system}")
     print(f"Initial flashpoints: {pochven.flashpoints}")
+    print(f"Fleet starting system: {pochven.fleet_starting_system}")
 
-    # Start at a random flashpoint
-    current_flashpoint_id = random.choice(list(pochven.flashpoints.keys()))
-    current_system = pochven.flashpoints[current_flashpoint_id]
+    # Find the nearest flashpoint from the fleet starting system
+    current_flashpoint_id = pochven.find_nearest_flashpoint(
+        pochven.fleet_starting_system)
+    current_system = pochven.fleet_starting_system
+
+    # Calculate the path to the nearest flashpoint
+    next_system = pochven.flashpoints[current_flashpoint_id]
+    path = pochven.find_shortest_path(current_system, next_system)
+    print(
+        f"\nPath from starting system {current_system} to nearest flashpoint at system {next_system}: {path}")
+    print(
+        f"Does this path include the camping system? {pochven.path_includes_camping_system(path)}")
+
+    # Move to the nearest flashpoint to begin the simulation
+    current_system = next_system
 
     print(
         f"\nStarting at flashpoint {current_flashpoint_id} in system {current_system}")
