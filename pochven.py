@@ -195,48 +195,43 @@ class Pochven:
         """
         encounters = 0
 
-        # Check if all starting positions were provided as arguments
-        randomize_all = not (
-            self.camping_system_provided or self.flashpoints_provided or self.fleet_starting_system_provided)
-
         for _ in range(n_simulations):
             # Create a copy of the original state
             original_flashpoints = self.flashpoints.copy()
             original_camping_system = self.camping_system
             original_fleet_starting_system = self.fleet_starting_system
 
-            # If no arguments were provided for any starting positions, randomize them for each simulation
-            if randomize_all:
-                # Randomize camping system
+            # Randomize any elements that weren't provided as arguments
+            simulation_flashpoints = original_flashpoints.copy()
+            simulation_camping_system = original_camping_system
+
+            # Randomize camping system if not provided
+            if not self.camping_system_provided:
                 simulation_camping_system = random.randint(0, 23)
                 self.camping_system = simulation_camping_system
 
-                # Randomize flashpoints
-                self.flashpoints = {}
+            # Randomize flashpoints if not provided
+            if not self.flashpoints_provided:
+                simulation_flashpoints = {}
                 for key in range(0, 3):
                     flashpoint_location = random.randint(0, 23)
-                    self.flashpoints[key] = flashpoint_location
+                    simulation_flashpoints[key] = flashpoint_location
+                self.flashpoints = simulation_flashpoints
 
+            # Determine the starting system and flashpoint
+            if self.fleet_starting_system is not None:
+                # Start at the specified system
+                current_system = self.fleet_starting_system
+                # Find the nearest flashpoint to start with
+                current_flashpoint_id = self.find_nearest_flashpoint(
+                    current_system)
+                # Move to that flashpoint to begin the simulation
+                current_system = self.flashpoints[current_flashpoint_id]
+            else:
                 # Start at a random flashpoint
                 current_flashpoint_id = random.choice(
                     list(self.flashpoints.keys()))
                 current_system = self.flashpoints[current_flashpoint_id]
-            else:
-                # Use the existing state with fixed positions
-                # Determine the starting system and flashpoint
-                if self.fleet_starting_system is not None:
-                    # Start at the specified system
-                    current_system = self.fleet_starting_system
-                    # Find the nearest flashpoint to start with
-                    current_flashpoint_id = self.find_nearest_flashpoint(
-                        current_system)
-                    # Move to that flashpoint to begin the simulation
-                    current_system = original_flashpoints[current_flashpoint_id]
-                else:
-                    # Start at a random flashpoint (existing behavior)
-                    current_flashpoint_id = random.choice(
-                        list(original_flashpoints.keys()))
-                    current_system = original_flashpoints[current_flashpoint_id]
 
             # Track if we encounter the camping system in this simulation
             encountered = False

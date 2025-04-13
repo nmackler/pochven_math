@@ -27,14 +27,14 @@ The Pochven constellation is modeled as a ring of 24 systems, with 3 active flas
 ### Basic Usage
 
 ```bash
-python example.py --camping-system 12 --n-flashpoints 10 --visualize --plot-curve
+python example.py --camping-system 12 --fleet-starting-system 5 --n-flashpoints 10 --visualize --plot-curve
 ```
 
 ### Command-line Arguments
 
-- `--camping-system`: System ID to camp in (0-23). If not provided, a random system will be chosen.
-- `--flashpoint-systems`: Three system IDs (0-23) where flashpoints start. If not provided, random systems will be chosen.
-- `--fleet-starting-system`: System ID where the flashpoint fleet starts (0-23). If not provided, starts at a random flashpoint.
+- `--camping-system`: System ID to camp in (0-23). At least two of the three starting parameters must be specified together.
+- `--flashpoint-systems`: Three system IDs (0-23) where flashpoints start. At least two of the three starting parameters must be specified together.
+- `--fleet-starting-system`: System ID where the flashpoint fleet starts (0-23). At least two of the three starting parameters must be specified together.
 - `--n-flashpoints`: Number of flashpoints to complete in each simulation (default: 10)
 - `--n-simulations`: Number of simulations to run (default: 1000)
 - `--max-flashpoints`: Maximum number of flashpoints to plot in probability curve (default: 20)
@@ -44,22 +44,28 @@ python example.py --camping-system 12 --n-flashpoints 10 --visualize --plot-curv
 
 ### Example
 
-To calculate the probability of encountering a flashpoint fleet after 15 flashpoints, while camping in system 5:
-
-```bash
-python example.py --camping-system 5 --n-flashpoints 15 --n-simulations 2000
-```
-
 To specify both the camping system and the fleet's starting system:
 
 ```bash
 python example.py --camping-system 5 --fleet-starting-system 10 --n-flashpoints 15
 ```
 
+To specify both the camping system and flashpoint systems:
+
+```bash
+python example.py --camping-system 5 --flashpoint-systems 0 8 16 --n-flashpoints 15
+```
+
+To specify all three parameters:
+
+```bash
+python example.py --camping-system 5 --fleet-starting-system 10 --flashpoint-systems 0 8 16 --n-flashpoints 15
+```
+
 To visualize the Pochven constellation and plot a probability curve:
 
 ```bash
-python example.py --visualize --plot-curve
+python example.py --camping-system 5 --fleet-starting-system 10 --visualize --plot-curve
 ```
 
 ## Implementation Details
@@ -78,9 +84,9 @@ The simulation works as follows:
 8. Run multiple simulations and calculate the probability of encountering the camping fleet at least once
 
 **Randomization Behavior:**
-- If no arguments are provided for any starting positions (camping system, flashpoints, or fleet starting system), all positions are randomized for each simulation run
-- If any arguments are provided, those positions remain fixed across all simulation runs
-- This ensures maximum variability when no specific starting conditions are specified, while still allowing for deterministic testing with fixed positions
+- At least two of the three starting parameters (camping system, flashpoints, fleet starting system) must be specified
+- Any unspecified parameter will be randomized for each simulation run
+- This ensures a balance between controlled testing and realistic variability
 
 ### Analytical Approximation
 

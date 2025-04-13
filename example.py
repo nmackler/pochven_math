@@ -11,10 +11,10 @@ def main():
         description='Pochven Flashpoint Fleet Encounter Probability Calculator')
 
     parser.add_argument('--camping-system', type=int, default=None,
-                        help='System ID to camp in (0-23). If not provided, a random system will be chosen.')
+                        help='System ID to camp in (0-23). At least two of --camping-system, --flashpoint-systems, and --fleet-starting-system must be specified together.')
 
     parser.add_argument('--flashpoint-systems', type=int, nargs=3, default=None,
-                        help='Three system IDs (0-23) where flashpoints start. If not provided, random systems will be chosen.')
+                        help='Three system IDs (0-23) where flashpoints start. At least two of --camping-system, --flashpoint-systems, and --fleet-starting-system must be specified together.')
 
     parser.add_argument('--n-flashpoints', type=int, default=10,
                         help='Number of flashpoints to complete in each simulation (default: 10)')
@@ -35,9 +35,20 @@ def main():
                         help='Plot the probability curve')
 
     parser.add_argument('--fleet-starting-system', type=int, default=None,
-                        help='System ID where the flashpoint fleet starts (0-23). If not provided, starts at a random flashpoint.')
+                        help='System ID where the flashpoint fleet starts (0-23). At least two of --camping-system, --flashpoint-systems, and --fleet-starting-system must be specified together.')
 
     args = parser.parse_args()
+
+    # Validate that at least two of the three parameters are specified
+    specified_params = sum([
+        args.camping_system is not None,
+        args.flashpoint_systems is not None,
+        args.fleet_starting_system is not None
+    ])
+
+    if specified_params == 1:
+        parser.error(
+            "At least two of --camping-system, --flashpoint-systems, and --fleet-starting-system must be specified together")
 
     # Create a Pochven instance with the specified parameters
     pochven = Pochven(
