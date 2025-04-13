@@ -68,14 +68,19 @@ python example.py --visualize --plot-curve
 
 The simulation works as follows:
 
-1. Initialize the Pochven constellation with 24 systems and 3 random flashpoints
-2. Start the flashpoint fleet at the specified system or at a random flashpoint if not specified
+1. Initialize the Pochven constellation with 24 systems and 3 flashpoints
+2. Start the flashpoint fleet at the specified system or at a flashpoint
 3. Complete the current flashpoint, which removes it and spawns a new one
 4. Find the nearest flashpoint from the current position
 5. Calculate the shortest path to the nearest flashpoint
 6. Check if this path includes the camping system
 7. Move to the nearest flashpoint and repeat steps 3-6 for the desired number of flashpoints
 8. Run multiple simulations and calculate the probability of encountering the camping fleet at least once
+
+**Randomization Behavior:**
+- If no arguments are provided for any starting positions (camping system, flashpoints, or fleet starting system), all positions are randomized for each simulation run
+- If any arguments are provided, those positions remain fixed across all simulation runs
+- This ensures maximum variability when no specific starting conditions are specified, while still allowing for deterministic testing with fixed positions
 
 ### Analytical Approximation
 
