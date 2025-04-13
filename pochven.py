@@ -120,8 +120,7 @@ class Pochven:
         new_id = max(self.flashpoints.keys()) + 1 if self.flashpoints else 0
 
         # Find a system that doesn't already have a flashpoint
-        available_systems = [i for i in range(
-            24) if i not in self.flashpoints.values()]
+        available_systems = range(0, 24)
         if not available_systems:
             raise ValueError("No available systems for new flashpoint")
 
