@@ -188,15 +188,10 @@ class Pochven:
             original_flashpoints = self.flashpoints.copy()
             original_camping_system = self.camping_system
 
-            # Reset flashpoints for each simulation
-            self.flashpoints = {}
-            for i in range(3):
-                self.spawn_new_flashpoint()
-
             # Start at a random flashpoint
             current_flashpoint_id = random.choice(
-                list(self.flashpoints.keys()))
-            current_system = self.flashpoints[current_flashpoint_id]
+                list(original_flashpoints.keys()))
+            current_system = original_flashpoints[current_flashpoint_id]
 
             # Track if we encounter the camping system in this simulation
             encountered = False
@@ -380,6 +375,9 @@ class Pochven:
             'Probability of Encountering Camping Fleet vs. Number of Flashpoints')
         plt.grid(True)
         plt.legend()
+
+        # Set x-ticks to only show whole numbers
+        plt.xticks(n_values)
 
         # Show the plot
         plt.show()
